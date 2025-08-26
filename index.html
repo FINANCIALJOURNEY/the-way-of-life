@@ -13,12 +13,13 @@
   <div id="player"></div>
 
   <script>
-    function savePlayer(name) {
-      console.log("Saving player:", name);
-      // sini kau boleh call Firebase untuk simpan
+    // Function save player
+    function savePlayer(playerName) {
+      document.getElementById('player').innerText = "Welcome, " + playerName;
+      console.log("Saved player:", playerName);
     }
 
-    // Real NFC button
+    // Real NFC scan
     document.getElementById('scanBtn').addEventListener('click', async () => {
       if ('NDEFReader' in window) {
         try {
@@ -28,7 +29,6 @@
             const decoder = new TextDecoder();
             for (const record of event.message.records) {
               const playerName = decoder.decode(record.data);
-              document.getElementById('player').innerText = "Welcome, " + playerName;
               savePlayer(playerName);
             }
           };
@@ -40,13 +40,11 @@
       }
     });
 
-    // Simulate button
+    // Simulation
     document.getElementById('simulateBtn').addEventListener('click', () => {
-      const fakeName = "Player_" + Math.floor(Math.random() * 1000);
-      document.getElementById('player').innerText = "Welcome, " + fakeName;
-      savePlayer(fakeName);
+      const fakePlayer = "Player_" + Math.floor(Math.random() * 100);
+      savePlayer(fakePlayer);
     });
   </script>
 </body>
 </html>
-
