@@ -9,6 +9,7 @@
 <body>
   <h1>NFC Game</h1>
   <button id="scanBtn">Tap NFC to Join Game</button>
+  <button id="simBtn">Simulate NFC Scan</button>
   <div id="player"></div>
 
   <script>
@@ -32,6 +33,18 @@
         alert("NFC not supported on this device/browser.");
       }
     });
-  </script>
+  <script>
+  const playerDiv = document.getElementById("player");
+
+  function savePlayer(name) {
+    console.log("Saved player:", name);
+  }
+
+  document.getElementById('simBtn').addEventListener('click', () => {
+    const fakePlayer = "Tester"; 
+    playerDiv.textContent = "Player joined: " + fakePlayer;
+    savePlayer(fakePlayer);
+  });
+</script>
 </body>
 </html>
