@@ -9,41 +9,52 @@
 <body>
   <h1>NFC Game</h1>
   <button id="scanBtn">Tap NFC to Join Game</button>
-  <button id="simulateBtn" style="margin-left:10px;">Simulate NFC</button>
-  <div id="player" style="margin-top:20px;font-size:1.2em;color:#333;"></div>
+  <button id="simulateBtn">Simulate NFC</button>
+  <div id="player"></div>
 
   <script>
-    function savePlayer(playerName) {
-      document.getElementById('player').innerText = "Welcome, " + playerName;
-      console.log("Saved player:", playerName);
-    }
+    // Pastikan script jalan lepas page siap
+    window.addEventListener("DOMContentLoaded", () => {
+      const scanBtn = document.getElementById('scanBtn');
+      const simulateBtn = document.getElementById('simulateBtn');
+      const playerDiv = document.getElementById('player');
 
-    // Real NFC scan (jika tersedia)
-    document.getElementById('scanBtn').addEventListener('click', async () => {
-      if ('NDEFReader' in window) {
-        try {
-          const reader = new NDEFReader();
-          await reader.scan();
-          reader.onreading = (event) => {
-            const decoder = new TextDecoder();
-            for (const record of event.message.records) {
-              const playerName = decoder.decode(record.data);
-              savePlayer(playerName);
-            }
-          };
-        } catch (error) {
-          console.error(error);
+      // Butang NFC sebenar
+      scanBtn.addEventListener('click', async () => {
+        if ('NDEFReader' in window) {
+          try {
+            const reader = new NDEFReader();
+            await reader.scan();
+            reader.onreading = (event) => {
+              const decoder = new TextDecoder();
+              for (const record of event.message.records) {
+                const playerName = decoder.decode(record.data);
+                playerDiv.innerText = "Welcome, " + playerName;
+                savePlayer(playerName);
+              }
+            };
+          } catch (error) {
+            console.error(error);
+            alert("Error: " + error);
+          }
+        } else {
+          alert("NFC not supported on this device/browser.");
         }
-      } else {
-        alert("NFC not supported on this device/browser.");
-      }
-    });
+      });
 
-    // Simulate NFC untuk testing
-    document.getElementById('simulateBtn').addEventListener('click', () => {
-      const fakePlayer = "Player_" + Math.floor(Math.random() * 1000);
-      savePlayer(fakePlayer);
+      // Butang simulate (guna bila tak ada NFC)
+      simulateBtn.addEventListener('click', () => {
+        const fakeName = "Player" + Math.floor(Math.random() * 100);
+        playerDiv.innerText = "Welcome, " + fakeName;
+        savePlayer(fakeName);
+      });
+
+      // Dummy save function
+      function savePlayer(name) {
+        console.log("Saving player:", name);
+      }
     });
   </script>
 </body>
 </html>
+
