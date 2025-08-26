@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>NFC Game</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="firebase.js"></script>
+</head>
+<body>
+  <h1>NFC Game</h1>
+  <button id="scanBtn">Tap NFC to Join Game</button>
+  <div id="player"></div>
+
+  <script>
+    document.getElementById('scanBtn').addEventListener('click', async () => {
+      if ('NDEFReader' in window) {
+        try {
+          const reader = new NDEFReader();
+          await reader.scan();
+          reader.onreading = (event) => {
+            const decoder = new TextDecoder();
+            for (const record of event.message.records) {
+              const playerName = decoder.decode(record.data);
+              document.getElementById('player').innerText = "Welcome, " + playerName;
+              savePlayer(playerName);
+            }
+          };
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        alert("NFC not supported on this device/browser.");
+      }
+    });
+  </script>
+</body>
+</html>
