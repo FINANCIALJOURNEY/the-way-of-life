@@ -9,17 +9,16 @@
 <body>
   <h1>NFC Game</h1>
   <button id="scanBtn">Tap NFC to Join Game</button>
-  <button id="simulateBtn">Simulate NFC</button>
-  <div id="player"></div>
+  <button id="simulateBtn" style="margin-left:10px;">Simulate NFC</button>
+  <div id="player" style="margin-top:20px;font-size:1.2em;color:#333;"></div>
 
   <script>
-    // Function save player
     function savePlayer(playerName) {
       document.getElementById('player').innerText = "Welcome, " + playerName;
       console.log("Saved player:", playerName);
     }
 
-    // Real NFC scan
+    // Real NFC scan (jika tersedia)
     document.getElementById('scanBtn').addEventListener('click', async () => {
       if ('NDEFReader' in window) {
         try {
@@ -40,9 +39,9 @@
       }
     });
 
-    // Simulation
+    // Simulate NFC untuk testing
     document.getElementById('simulateBtn').addEventListener('click', () => {
-      const fakePlayer = "Player_" + Math.floor(Math.random() * 100);
+      const fakePlayer = "Player_" + Math.floor(Math.random() * 1000);
       savePlayer(fakePlayer);
     });
   </script>
