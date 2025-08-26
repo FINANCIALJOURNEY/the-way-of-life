@@ -9,10 +9,16 @@
 <body>
   <h1>NFC Game</h1>
   <button id="scanBtn">Tap NFC to Join Game</button>
-  <button id="simBtn">Simulate NFC Scan</button>
+  <button id="simulateBtn">Simulate NFC</button>
   <div id="player"></div>
 
   <script>
+    function savePlayer(name) {
+      console.log("Saving player:", name);
+      // sini kau boleh call Firebase untuk simpan
+    }
+
+    // Real NFC button
     document.getElementById('scanBtn').addEventListener('click', async () => {
       if ('NDEFReader' in window) {
         try {
@@ -33,26 +39,14 @@
         alert("NFC not supported on this device/browser.");
       }
     });
-  <script>
-  const playerDiv = document.getElementById("player");
 
-  function savePlayer(name) {
-    console.log("Saved player:", name);
-  }
-
-  document.getElementById('simBtn').addEventListener('click', () => {
-    const fakePlayer = "Tester"; 
-    playerDiv.textContent = "Player joined: " + fakePlayer;
-    savePlayer(fakePlayer);
-  });
-</script>
+    // Simulate button
+    document.getElementById('simulateBtn').addEventListener('click', () => {
+      const fakeName = "Player_" + Math.floor(Math.random() * 1000);
+      document.getElementById('player').innerText = "Welcome, " + fakeName;
+      savePlayer(fakeName);
+    });
+  </script>
 </body>
-  <button id="simulateBtn">Simulate NFC</button>
-
-<script>
-  document.getElementById("simulateBtn").addEventListener("click", function() {
-    alert("NFC scan simulated!");
-    // kat sini nanti kau boleh panggil function yang sama macam NFC sebenar
-  });
-</script>
 </html>
+
