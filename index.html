@@ -1,60 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>NFC Game</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script type="module" src="firebase.js"></script>
+  <style>
+    .section { display: none; margin-top: 20px; }
+    #joinSection, #gameSection, #leaderboardSection { margin: 20px; }
+    button { margin: 5px; padding: 10px; font-size: 16px; }
+  </style>
 </head>
 <body>
   <h1>NFC Game</h1>
-  <button id="scanBtn">Tap NFC to Join Game</button>
-  <button id="simulateBtn">Simulate NFC</button>
-  <div id="player"></div>
+
+  <!-- Join Game Section -->
+  <div id="joinSection" class="section">
+    <button id="scanBtn">Tap NFC / Simulate Join</button>
+  </div>
+
+  <!-- Game Section -->
+  <div id="gameSection" class="section">
+    <h2 id="playerName"></h2>
+    <h3 id="scoreDisplay">Score: 0</h3>
+    <button id="addScoreBtn">+10 Points</button>
+    <button id="endGameBtn">End Game</button>
+  </div>
+
+  <!-- Leaderboard Section -->
+  <div id="leaderboardSection" class="section">
+    <h2>Leaderboard</h2>
+    <ul id="leaderboardList"></ul>
+    <button id="backBtn">Back to Join</button>
+  </div>
 
   <script>
-    // Pastikan script jalan lepas page siap
-    window.addEventListener("DOMContentLoaded", () => {
-      const scanBtn = document.getElementById('scanBtn');
-      const simulateBtn = document.getElementById('simulateBtn');
-      const playerDiv = document.getElementById('player');
+    // Sections
+    const joinSection = document.getElementById('joinSection');
+    const gameSection = document.getElementById('gameSection');
+    const leaderboardSection = document.getElementById('leaderboardSection');
 
-      // Butang NFC sebenar
-      scanBtn.addEventListener('click', async () => {
-        if ('NDEFReader' in window) {
-          try {
-            const reader = new NDEFReader();
-            await reader.scan();
-            reader.onreading = (event) => {
-              const decoder = new TextDecoder();
-              for (const record of event.message.records) {
-                const playerName = decoder.decode(record.data);
-                playerDiv.innerText = "Welcome, " + playerName;
-                savePlayer(playerName);
-              }
-            };
-          } catch (error) {
-            console.error(error);
-            alert("Error: " + error);
-          }
-        } else {
-          alert("NFC not supported on this device/browser.");
-        }
+    // Game Elements
+    const scanBtn = document.getElementById('scanBtn');
+    const playerNameDisplay = document.getElementById('playerName');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const addScoreBtn = document.getElementById('addScoreBtn');
+    const endGameBtn = document.getElementById('endGameBtn');
+    const leaderboardList = document.getElementById('leaderboardList');
+    const backBtn = document.getElementById('backBtn');
+
+    // Game Variables
+    let playerName = "";
+    let score = 0;
+    let leaderboard = [];
+
+    // Show Join Section on load
+    joinSection.style.display = "block";
+
+    // Player join
+    scanBtn.addEventListener('click', () => {
+      // Simulate NFC
+      playerName = "Player_" + Math.floor(Math.random()*1000);
+      score = 0;
+      playerNameDisplay.innerText = "Welcome, " + playerName;
+      scoreDisplay.innerText = "Score: " + score;
+
+      // Switch section
+      joinSection.style.display = "none";
+      gameSection.style.display = "block";
+    });
+
+    // Add score
+    addScoreBtn.addEventListener('click', () => {
+      score += 10;
+      scoreDisplay.innerText = "Score: " + score;
+    });
+
+    // End game
+    endGameBtn.addEventListener('click', () => {
+      // Add to leaderboard
+      leaderboard.push({name: playerName, score: score});
+      showLeaderboard();
+    });
+
+    // Show leaderboard
+    function showLeaderboard() {
+      gameSection.style.display = "none";
+      leaderboardSection.style.display = "block";
+
+      // Clear previous list
+      leaderboardList.innerHTML = "";
+      // Sort leaderboard by score descending
+      leaderboard.sort((a,b) => b.score - a.score);
+      leaderboard.forEach(p => {
+        const li = document.createElement('li');
+        li.innerText = p.name + " - " + p.score;
+        leaderboardList.appendChild(li);
       });
+    }
 
-      // Butang simulate (guna bila tak ada NFC)
-      simulateBtn.addEventListener('click', () => {
-        const fakeName = "Player" + Math.floor(Math.random() * 100);
-        playerDiv.innerText = "Welcome, " + fakeName;
-        savePlayer(fakeName);
-      });
-
-      // Dummy save function
-      function savePlayer(name) {
-        console.log("Saving player:", name);
-      }
+    // Back to join
+    backBtn.addEventListener('click', () => {
+      leaderboardSection.style.display = "none";
+      joinSection.style.display = "block";
     });
   </script>
 </body>
 </html>
-
